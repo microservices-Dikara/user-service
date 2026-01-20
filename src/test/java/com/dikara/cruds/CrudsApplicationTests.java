@@ -1,4 +1,4 @@
-package com.dikara.simple.cruds.cruds;
+package com.dikara.cruds;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

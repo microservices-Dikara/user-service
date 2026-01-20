@@ -1,4 +1,4 @@
-package com.dikara.simple.cruds.cruds;
+package com.dikara.cruds;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
