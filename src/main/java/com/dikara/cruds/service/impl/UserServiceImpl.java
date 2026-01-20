@@ -3,6 +3,7 @@ package com.dikara.cruds.service.impl;
 import com.dikara.cruds.constant.GlobalMessage;
 import com.dikara.cruds.constant.Status;
 import com.dikara.cruds.dto.request.UserRequest;
+import com.dikara.cruds.dto.response.PaginationResponse;
 import com.dikara.cruds.dto.response.UserResponse;
 import com.dikara.cruds.entity.User;
 import com.dikara.cruds.exception.BusinessException;
@@ -10,6 +11,9 @@ import com.dikara.cruds.repository.UserRepository;
 import com.dikara.cruds.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,6 +83,21 @@ private final UserRepository userRepository;
        updateMapToEntity(user, userResult);
         userResult =userRepository.save(userResult);
         return mapToResponse(userResult);
+    }
+
+    @Override
+    public PaginationResponse<UserResponse> findAll(int page, int size, String keyword) {
+        int zeroBasedPage = Math.max(0, page - 1);
+        Pageable pageable = PageRequest.of(zeroBasedPage, size);
+
+        Page<User> centerPage;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            centerPage= userRepository.findByKeywordOrderByCreatedDateDesc(keyword, pageable);
+        }else{
+            centerPage =    userRepository.findByIsDeletedFalseOrderByCreatedDateDesc(pageable);
+        }
+        Page<UserResponse> mappedPage = centerPage.map(this::mapToResponse);
+        return new PaginationResponse<>(mappedPage);
     }
 
     private UserResponse mapToResponse (User user){
