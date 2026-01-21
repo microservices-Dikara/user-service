@@ -5,6 +5,7 @@ import com.dikara.cruds.constant.Status;
 import com.dikara.cruds.dto.request.UserRequest;
 import com.dikara.cruds.dto.response.PaginationResponse;
 import com.dikara.cruds.dto.response.UserResponse;
+import com.dikara.cruds.entity.Role;
 import com.dikara.cruds.entity.User;
 import com.dikara.cruds.exception.BusinessException;
 import com.dikara.cruds.repository.UserRepository;
@@ -114,6 +115,7 @@ private final UserRepository userRepository;
                 .createdDate(user.getCreatedDate())
                 .updatedBy(user.getUpdatedBy())
                 .updatedDate(user.getUpdatedDate())
+                .Role(user.getRole().toString())
                 .build();
 
     }
@@ -134,6 +136,7 @@ private final UserRepository userRepository;
                 .updatedBy("Admin")
                 .createdDate(now)
                 .updatedDate(now)
+                .role(Role.USER)
                 .build();
     }
 
@@ -149,6 +152,7 @@ private final UserRepository userRepository;
         user.setUsername(userRequest.getUsername());
         user.setUpdatedBy("Admin");
         user.setUpdatedDate(now);
+        user.setRole(Role.USER);
 
 
 

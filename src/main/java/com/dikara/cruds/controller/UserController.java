@@ -6,6 +6,7 @@ import com.dikara.cruds.dto.response.UserResponse;
 import com.dikara.cruds.entity.User;
 import com.dikara.cruds.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +19,17 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping
+    @GetMapping("/getAll")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> findAll(){
         return userService.findAll();
+    }
+
+
+    @PreAuthorize("denyAll()")
+    @GetMapping("/test-deny")
+    public String test() {
+        return "SHOULD NEVER SHOW";
     }
 
     @PostMapping
@@ -38,7 +47,7 @@ public class UserController {
     public UserResponse update (@PathVariable String id,@RequestBody UserRequest user){
         return userService.updateUser(id, user);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/pagination")
     public PaginationResponse<UserResponse> findAllUsersWithPagination(
             @RequestParam(defaultValue = "1") int page,

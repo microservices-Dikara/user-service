@@ -18,6 +18,7 @@ public class UserResponse extends BaseResponse {
     private String username;
     private String phoneNumber;
     private String userStatus;
+    private String Role;
 
 
 }
