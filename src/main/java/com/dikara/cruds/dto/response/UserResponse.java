@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class UserResponse extends BaseResponse {
-    private Long id;
+    private UUID id;
     private String name;
     private String username;
     private String phoneNumber;

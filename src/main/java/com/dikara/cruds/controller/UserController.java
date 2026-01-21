@@ -26,6 +26,7 @@ public class UserController {
     @PostMapping
     public UserResponse create(@RequestBody UserRequest user){
         return userService.createUser(user);
+
     }
 
     @DeleteMapping ("/{id}")

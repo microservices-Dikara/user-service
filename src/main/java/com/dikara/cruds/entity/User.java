@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.UUID;
+
 @Entity
 @Table (name = "m_user", schema = "master_param")
 @NoArgsConstructor
@@ -15,9 +17,9 @@ import lombok.experimental.SuperBuilder;
 public class User extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "user_id")
-    private Long id;
+    private UUID id;
 
     @Column(name = "username")
     private String username;

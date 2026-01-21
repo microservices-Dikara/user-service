@@ -7,8 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("SELECT b FROM User b WHERE b.userStatus = 'ACTIVE' ORDER BY b.createdDate DESC")
     Page<User> findByIsDeletedFalseOrderByCreatedDateDesc(Pageable pageable);

@@ -11,7 +11,7 @@
 	<groupId>com.dikara.simple.cruds</groupId>
 	<artifactId>cruds</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>cruds</name>
+	<name>user-service</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -87,7 +87,13 @@
 		</dependency>
 
 
-	</dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+
+    </dependencies>
 
 	<build>
 		<plugins>

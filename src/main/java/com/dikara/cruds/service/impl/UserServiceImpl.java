@@ -15,14 +15,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +30,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
 private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<UserResponse> findAll() {
@@ -41,6 +41,9 @@ private final UserRepository userRepository;
     @Override
     @Transactional
     public UserResponse createUser(UserRequest user) {
+
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
         User userResult = userRepository.save(mapToEntity(user));
         return mapToResponse(userResult);
     }
@@ -49,9 +52,9 @@ private final UserRepository userRepository;
 
     @Override
     public Map<String, String> deleteUser(String id) {
-        User userResult = userRepository.findById(Long.valueOf(id)).orElse(null);
+        User userResult = userRepository.findById(UUID.fromString(id)).orElse(null);
         if (userResult != null) {
-            userRepository.deleteById(Long.valueOf(id));
+            userRepository.deleteById(UUID.fromString(id));
             Map<String, String> response = new HashMap<>();
             response.put("status", "success");
             response.put("message", "User " + id + " has been deleted successfully");
@@ -69,7 +72,7 @@ private final UserRepository userRepository;
 
     @Override
     public UserResponse updateUser(String id, UserRequest user) {
-        User userResult = userRepository.findById(Long.valueOf(id)).orElse(null);
+        User userResult = userRepository.findById(UUID.fromString(id)).orElse(null);
 
         if (userResult == null){
             log.warn("User not found with code: {}", id);
