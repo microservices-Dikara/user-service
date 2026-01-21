@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,6 +44,18 @@ public class RestErrorHandlerControllerAdviser implements ErrorController {
   @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
   public ResponseEntity<Object> exception(Exception e) {
     log.warn("Exception = ", e);
+    String messageError = e.toString().toLowerCase();
+      if (e != null &&messageError.contains("access denied")){
+        Map<String, Object> errors = new HashMap<>();
+        errors.put("code", "ACCESS_DENIED");
+        errors.put("message", "ACCESS_DENIED");
+        return new ResponseEntity<>(BaseResponse.builder()
+                .code(GlobalMessage.ACCESS_DENIED.code)
+                .message(HttpStatus.FORBIDDEN.getReasonPhrase())
+                .build(),
+                HttpStatus.FORBIDDEN);
+    }
+
     Map<String, Object> errors = new HashMap<>();
     errors.put("code", "INTERNAL_SERVER_ERROR");
     errors.put("message", "INTERNAL_SERVER_ERROR");

@@ -21,6 +21,7 @@ public enum GlobalMessage {
     INVALID_DATA("80", "INVALID_DATA"),
     DB_ERROR("81", "DB_ERROR"),
     EXTERNAL_SERVER_ERROR("98", "EXTERNAL_SERVER_ERROR"),
+    ACCESS_DENIED("05", "ACCESS_DENIED"),
     ERROR("99", "ERROR");
 
     public final String code;

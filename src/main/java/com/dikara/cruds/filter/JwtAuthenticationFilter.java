@@ -2,13 +2,17 @@ package com.dikara.cruds.filter;
 
 import com.dikara.cruds.util.JwtUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.Authentication;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = header.substring(7);
 
+        try {
         Claims claims = jwtUtil.validate(token);
 
         String username = claims.getSubject();
@@ -60,7 +65,46 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         authorities
                 );
 
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        chain.doFilter(request, response);
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        } catch (ExpiredJwtException e) {
+            writeError(response, HttpServletResponse.SC_UNAUTHORIZED,
+                    "TOKEN_EXPIRED", "JWT token has expired");
+            return;
+
+        } catch (JwtException e) {
+            writeError(response, HttpServletResponse.SC_UNAUTHORIZED,
+                    "INVALID_TOKEN", "JWT token is invalid");
+            return;
+        }
+        catch (AccessDeniedException e) {
+            writeError(response, HttpServletResponse.SC_UNAUTHORIZED,
+                    "ACCESS_DENIED", "access denied");
+            return;
+        }
+
+
+            chain.doFilter(request, response);
+
+
+    }
+
+    private void writeError(
+            HttpServletResponse response,
+            int status,
+            String code,
+            String message
+    ) throws IOException {
+
+        response.setStatus(status);
+        response.setContentType("application/json");
+
+        response.getWriter().write("""
+            {
+              "status": %d,
+              "error": "%s",
+              "message": "%s"
+            }
+        """.formatted(status, code, message));
     }
 }
