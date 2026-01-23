@@ -1,0 +1,28 @@
+package com.dikara.user.repository;
+
+import com.dikara.user.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, UUID> {
+
+    @Query("SELECT b FROM User b WHERE b.userStatus = 'ACTIVE' ORDER BY b.createdDate DESC")
+    Page<User> findByIsDeletedFalseOrderByCreatedDateDesc(Pageable pageable);
+
+    @Query("SELECT c \n" +
+            "FROM User c \n" +
+            "WHERE c.userStatus = 'ACTIVE'\n" +
+            "AND (\n" +
+            "    UPPER(c.username) LIKE UPPER(CONCAT('%', :keyword, '%'))\n" +
+            "    OR UPPER(c.name) LIKE UPPER(CONCAT('%', :keyword, '%'))\n" +
+            "    OR UPPER(c.email) LIKE UPPER(CONCAT('%', :keyword, '%'))\n" +
+            ")\n" +
+            "ORDER BY c.createdDate DESC\n")
+    Page<User> findByKeywordOrderByCreatedDateDesc(String keyword, Pageable pageable);
+}
