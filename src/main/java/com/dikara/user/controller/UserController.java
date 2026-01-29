@@ -22,13 +22,16 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/getAll")
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<UserResponse> findAll(){
+   // @PreAuthorize("hasRole('ADMIN')")
+    public List<UserResponse> findAll(  @RequestHeader("X-User-Id") String userId,
+                                        @RequestHeader("X-Username") String username){
+
+        System.out.println(  "Hello " + username + " (" + userId + ")");
         return userService.findAll();
     }
 
 
-    @PreAuthorize("denyAll()")
+    //@PreAuthorize("denyAll()")
     @GetMapping("/test-deny")
     public String test() {
         return "SHOULD NEVER SHOW";
@@ -49,7 +52,7 @@ public class UserController {
     public UserResponse update (@PathVariable String id,@RequestBody UserRequest user){
         return userService.updateUser(id, user);
     }
-    @PreAuthorize("hasRole('ADMIN')")
+   // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/pagination")
     public PaginationResponse<UserResponse> findAllUsersWithPagination(
             @RequestParam(defaultValue = "1") int page,
