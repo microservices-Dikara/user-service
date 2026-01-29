@@ -3,6 +3,7 @@ package com.dikara.user.config;
 import com.dikara.user.filter.JwtAuthenticationFilter;
 import com.dikara.user.util.CustomAccessDeniedHandler;
 import com.dikara.user.util.CustomAuthEntryPoint;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,6 +19,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@ConditionalOnProperty(
+        name = "security.enabled",
+        havingValue = "false",
+        matchIfMissing = true
+)
 public class SecurityConfig {
 
 
@@ -28,30 +34,35 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter,  CustomAccessDeniedHandler accessDeniedHandler,
-                                           CustomAuthEntryPoint authEntryPoint) throws Exception {
+//    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter,  CustomAccessDeniedHandler accessDeniedHandler,
+//                                           CustomAuthEntryPoint authEntryPoint) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(sm ->
-                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(authEntryPoint)
-                        .accessDeniedHandler(accessDeniedHandler)
-                )
-
-
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/user").permitAll()
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().permitAll()
+                );
+        //return http.build();
+//                .sessionManagement(sm ->
+//                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                )
+//
+//                .exceptionHandling(ex -> ex
+//                        .authenticationEntryPoint(authEntryPoint)
+//                        .accessDeniedHandler(accessDeniedHandler)
+//                )
+//
+//
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers(HttpMethod.POST, "/user").permitAll()
+//                        .anyRequest().authenticated()
+//                )
 
 
 
 
 
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                //.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
