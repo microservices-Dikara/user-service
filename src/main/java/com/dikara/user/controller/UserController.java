@@ -9,6 +9,7 @@ import com.dikara.user.util.JwtPrincipal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.Map;
 @RequestMapping("/user")
 @Tag(name = "User", description = "User management API")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -30,6 +32,7 @@ public class UserController {
     public List<UserResponse> findAll(  @RequestHeader("X-User-Id") String userId,
                                         @RequestHeader("X-Username") String username){
 
+        log.info("Hello logging: "+ username + " (" + userId + ")");
         System.out.println(  "Hello " + username + " (" + userId + ")");
         return userService.findAll();
     }
